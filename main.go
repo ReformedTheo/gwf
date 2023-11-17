@@ -9,8 +9,9 @@ import (
 	"os"
 )
 
+const help string = "\ngo run main.go help to see avaliable commands."
+
 func main() {
-	help := "\ngo run main.go help to see avaliable commands."
 	args := os.Args[1:]
 	if len(args) == 0 {
 		fmt.Printf("No command! %s", help)
@@ -18,6 +19,13 @@ func main() {
 	}
 
 	switch args[0] {
+	case "initproject":
+		if len(args) < 2 {
+			fmt.Printf("Project name is required %s", help)
+			return
+		}
+		name := args[1]
+		initProject(name)
 	case "startserver":
 		startServer()
 	case "createconnection":
@@ -32,7 +40,6 @@ func main() {
 }
 
 func startServer() {
-	// Lógica para iniciar o servidor
 	fmt.Println("Server running on localhost:7830.")
 }
 
@@ -47,4 +54,8 @@ func connectORM() {
 
 func listAll() {
 	fmt.Printf("startserver - Run server on localhost:7830 \ncreateconnection - To create a connection with a database \n connect -  Connect and migrate data stored in models to DB")
+}
+
+func initProject(name string) {
+	orm.InitDb(name)
 }
