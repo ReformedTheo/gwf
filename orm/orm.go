@@ -25,7 +25,6 @@ type Config struct {
 	User     string
 	Password string
 	DBName   string
-	// Add other configuration fields as needed
 }
 
 // GLOBAL VARIABLES
