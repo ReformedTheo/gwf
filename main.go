@@ -34,6 +34,8 @@ func main() {
 		connectORM()
 	case "help":
 		listAll()
+	case "map":
+		mapModels()
 	default:
 		fmt.Printf("Unknown command! %s", help)
 	}
@@ -58,4 +60,8 @@ func listAll() {
 
 func initProject(name string) {
 	orm.InitDb(name)
+}
+
+func mapModels() {
+	orm.MapModels()
 }

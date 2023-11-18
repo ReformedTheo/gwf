@@ -3,8 +3,16 @@ package orm
 import (
 	"database/sql"
 	"fmt"
+	"go/ast"
+	"go/parser"
+	"go/token"
+
+	//"io"
 	"log"
 	"os"
+	"path/filepath"
+
+	//"reflect"
 
 	//"GWF/models"
 
@@ -21,6 +29,7 @@ type Config struct {
 }
 
 // GLOBAL VARIABLES
+var modelsPath string = filepath.Join(".", "models", "models.go")
 var connectionString string
 
 func check(e error) {
@@ -130,9 +139,41 @@ func InitDb(name string) {
 	check(err)
 }
 
-/*func createTable(){
-	db, err := sql.Open("mysql", getConnectionString())
-	check(err)
-	defer db.Close()
-	db.Exec("CREATE TABLE USER")
-}*/
+/*
+	func createTable(){
+		db, err := sql.Open("mysql", getConnectionString())
+		check(err)
+		defer db.Close()
+		db.Exec("CREATE TABLE USER")
+	}
+*/
+func MapModels() {
+
+	fset := token.NewFileSet()
+	node, err := parser.ParseFile(fset, modelsPath, nil, parser.ParseComments)
+	if err != nil {
+		fmt.Printf("Failed to parse the file: %v\n", err)
+		return
+	}
+
+	for _, f := range node.Decls {
+		genDecl, ok := f.(*ast.GenDecl)
+		if !ok {
+			continue
+		}
+
+		for _, spec := range genDecl.Specs {
+			typeSpec, ok := spec.(*ast.TypeSpec)
+			if !ok {
+				continue
+			}
+
+			structType, ok := typeSpec.Type.(*ast.StructType)
+			if !ok {
+				continue
+			}
+			fmt.Print(structType)
+			// Now we have all the structs selected and we need to process the SQL Queries
+		}
+	}
+}
